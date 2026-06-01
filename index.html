@@ -168,7 +168,7 @@
             
             <div class="flex justify-between items-center mb-4">
                 <h3 class="text-lg font-bold text-gray-900 flex items-center">
-                    <i class="fas fa-share-nodes text-indigo-600 mr-2"></i>공유 방법 선택
+                    <i class="fas fa-share-nodes text-indigo-600 mr-2"></i>순수 콘텐츠 공유
                 </h3>
                 <button onclick="closeShareModal()" class="text-gray-400 hover:text-gray-600">
                     <i class="fas fa-times text-xl"></i>
@@ -180,42 +180,28 @@
                 <i class="fas fa-circle-info text-amber-500 mt-0.5 text-sm"></i>
                 <div>
                     <span class="font-bold block mb-0.5">안내 및 공유 옵션</span>
-                    Iframe 미리보기나 PC 환경에서는 기기 기본 앱 호출이 제한될 수 있습니다. 다음 옵션을 통해 원하시는 곳으로 전달해 보세요.
+                    기기 기본 공유 앱 호출이 차단되었거나 제한된 환경입니다. 프롬프트북 출처를 제외한 순수 알맹이 데이터만 전달하려면 아래 옵션을 선택하세요.
                 </div>
             </div>
 
             <p id="shareTargetTitle" class="text-sm font-semibold text-gray-700 mb-4 bg-gray-50 p-2.5 rounded-lg"></p>
 
             <div class="space-y-3">
-                <!-- 1. 다이렉트 딥링크 복사 -->
-                <button onclick="executeCopyDeepLink()" class="w-full flex items-center justify-between p-4 bg-indigo-50 hover:bg-indigo-100 rounded-xl transition-all border border-indigo-100 text-left">
-                    <div class="flex items-center">
-                        <div class="w-10 h-10 bg-indigo-600 text-white rounded-full flex items-center justify-center mr-3 flex-shrink-0">
-                            <i class="fas fa-link"></i>
-                        </div>
-                        <div>
-                            <span class="block font-bold text-sm text-indigo-900">이 카드 단독 바로가기 링크 복사</span>
-                            <span class="block text-xs text-indigo-600">클릭 시 해당 카드 상세창이 즉시 열리는 주소 복사</span>
-                        </div>
-                    </div>
-                    <i class="fas fa-chevron-right text-indigo-400"></i>
-                </button>
-
-                <!-- 2. 프롬프트 원문 복사 -->
+                <!-- 1. 프롬프트 원문 복사 -->
                 <button onclick="executeCopyPromptOnly()" class="w-full flex items-center justify-between p-4 bg-emerald-50 hover:bg-emerald-100 rounded-xl transition-all border border-emerald-100 text-left">
                     <div class="flex items-center">
                         <div class="w-10 h-10 bg-emerald-600 text-white rounded-full flex items-center justify-center mr-3 flex-shrink-0">
                             <i class="far fa-file-code"></i>
                         </div>
                         <div>
-                            <span class="block font-bold text-sm text-emerald-900">프롬프트 원문 복사 (수동 붙여넣기)</span>
-                            <span class="block text-xs text-emerald-600">내용을 복사하여 카카오톡 등 다른 앱에 붙여넣기</span>
+                            <span class="block font-bold text-sm text-emerald-900">순수 프롬프트 원문 복사</span>
+                            <span class="block text-xs text-emerald-600">본문 텍스트만 깔끔하게 클립보드에 복사</span>
                         </div>
                     </div>
                     <i class="fas fa-chevron-right text-emerald-400"></i>
                 </button>
 
-                <!-- 3. 문자(SMS)로 공유하기 -->
+                <!-- 2. 문자(SMS)로 공유하기 -->
                 <a id="smsShareLink" href="#" class="w-full flex items-center justify-between p-4 bg-sky-50 hover:bg-sky-100 rounded-xl transition-all border border-sky-100 text-left">
                     <div class="flex items-center">
                         <div class="w-10 h-10 bg-sky-600 text-white rounded-full flex items-center justify-center mr-3 flex-shrink-0">
@@ -223,13 +209,13 @@
                         </div>
                         <div>
                             <span class="block font-bold text-sm text-sky-900">기기 문자(SMS) 앱 켜기</span>
-                            <span class="block text-xs text-sky-600">기본 문자 메시지 창에 프롬프트를 담아 실행</span>
+                            <span class="block text-xs text-sky-600">기본 문자 메시지 창에 순수 프롬프트만 입력</span>
                         </div>
                     </div>
                     <i class="fas fa-chevron-right text-sky-400"></i>
                 </a>
 
-                <!-- 4. 이메일로 보내기 -->
+                <!-- 3. 이메일로 보내기 -->
                 <a id="emailShareLink" href="#" class="w-full flex items-center justify-between p-4 bg-rose-50 hover:bg-rose-100 rounded-xl transition-all border border-rose-100 text-left">
                     <div class="flex items-center">
                         <div class="w-10 h-10 bg-rose-600 text-white rounded-full flex items-center justify-center mr-3 flex-shrink-0">
@@ -237,7 +223,7 @@
                         </div>
                         <div>
                             <span class="block font-bold text-sm text-rose-900">이메일 앱 실행하기</span>
-                            <span class="block text-xs text-rose-600">지정된 기본 메일함에 내용을 실어서 전송</span>
+                            <span class="block text-xs text-rose-600">지정된 기본 메일함에 프롬프트 내용만 담아 전송</span>
                         </div>
                     </div>
                     <i class="fas fa-chevron-right text-rose-400"></i>
@@ -824,41 +810,69 @@ https://app.notion.com/p/AI-1-4-372b4989ca09803a96b8f3ac127373de`
 
         /**
          * 다른 앱으로 공유하기를 즉시 실행하는 핵심 트리거 함수
+         * 프롬프트북의 명칭, 링크 등을 철저하게 배제하고, '순수 파일'과 '순수 프롬프트'만 전송되도록 고도화되었습니다.
          */
-        function triggerAppShare(id) {
+        async function triggerAppShare(id) {
             const item = items.find(i => i.id === id);
             if (!item) return;
 
             activeShareItem = item;
 
-            const cleanUrl = window.location.origin + window.location.pathname;
-            const deepLinkUrl = `${cleanUrl}#id=${item.id}`;
-            const displayId = item.id.startsWith('6-') ? `과제 ${item.id.replace('6-', '')}` : item.id;
-            const shareText = `[지쿱AI대학교 프롬프트북]\n[${displayId}] ${item.title}\n\n프롬프트 내용:\n${item.prompt}\n\n이 프롬프트 바로가기 링크:\n${deepLinkUrl}`;
+            // 프롬프트북 출처 문구와 사이트 도메인을 완전히 배제하고 오직 순수 텍스트만 전송되도록 설정
+            const shareText = item.prompt;
 
-            // 기본 SMS 및 Email URL 구성
+            // SMS 및 이메일 전송 경로 구성 (프롬프트북 관련 문구 완전 비노출)
             const smsLink = document.getElementById('smsShareLink');
             const emailLink = document.getElementById('emailShareLink');
-            
             smsLink.href = `sms:?body=${encodeURIComponent(shareText)}`;
-            emailLink.href = `mailto:?subject=${encodeURIComponent(`[지쿱AI대학교] ${item.title}`)}&body=${encodeURIComponent(shareText)}`;
+            emailLink.href = `mailto:?subject=${encodeURIComponent(item.title)}&body=${encodeURIComponent(shareText)}`;
 
-            // 1. 기기 기본 앱 공유 (navigator.share) 최우선 시도
+            // 1. 기기 기본 앱 공유 기능(navigator.share) 지원 감지
             if (navigator.share) {
-                navigator.share({
-                    title: `[${displayId}] ${item.title}`,
-                    text: `${item.title}\n\n${item.prompt}`,
-                    url: deepLinkUrl
-                }).then(() => {
-                    showToast('성공적으로 공유되었습니다.');
-                }).catch((err) => {
-                    // 유저가 임의 취소(AbortError)한 경우를 제외하고 실패 시 대체 가이드 모달 실행
-                    if(err.name !== 'AbortError') {
+                try {
+                    let shareData = {};
+
+                    // 파일 객체화 후 순수 원본 파일 자체 전송 시도
+                    if (item.type !== 'link' && item.media) {
+                        try {
+                            const response = await fetch(item.media);
+                            const blob = await response.blob();
+                            const fileName = item.media.split('/').pop();
+                            const fileType = blob.type || (item.type === 'video' ? 'video/mp4' : 'image/jpeg');
+                            const file = new File([blob], fileName, { type: fileType });
+
+                            // navigator.canShare를 통해 기기가 이미지/동영상 등 파일 공유를 원활히 처리할 수 있는지 점검
+                            if (navigator.canShare && navigator.canShare({ files: [file] })) {
+                                shareData.files = [file];
+                            }
+                        } catch (mediaErr) {
+                            console.log("미디어 파일 변환 실패 (텍스트만 공유로 우회 작동):", mediaErr);
+                        }
+                    }
+
+                    // 공유 데이터에 순수 프롬프트 텍스트 대입 (프롬프트북 제목과 바로가기 링크 완전 차단)
+                    shareData.text = shareText;
+
+                    await navigator.share(shareData);
+                    showToast('콘텐츠 공유가 완료되었습니다.');
+
+                } catch (err) {
+                    console.log('순정 공유 동작 오류:', err);
+
+                    // 단순 취소가 아닌, 브라우저 환경 및 보안 문제로 실패한 경우에만 안전용 가이드 모달 실행
+                    const cancelErrors = ['AbortError', 'NotAllowedError', 'Share canceled', 'User cancelled', 'NotAllowedError: Permission denied'];
+                    const isUserCancel = cancelErrors.some(errorName => 
+                        err.name === errorName || 
+                        (err.message && err.message.toLowerCase().includes('cancel')) ||
+                        (err.message && err.message.toLowerCase().includes('deny'))
+                    );
+
+                    if (!isUserCancel) {
                         openShareOptionsModal(item);
                     }
-                });
+                }
             } else {
-                // 2. PC 또는 웹뷰 등 navigator.share 미지원 시 가이드 모달 제공 (문자, 이메일 연동 포함)
+                // navigator.share 미지원 시 커스텀 대체 우회 경로 팝업 실행
                 openShareOptionsModal(item);
             }
         }
@@ -892,19 +906,10 @@ https://app.notion.com/p/AI-1-4-372b4989ca09803a96b8f3ac127373de`
             }, 300);
         }
 
-        // 액션 1: 특정 딥링크 복사
-        function executeCopyDeepLink() {
-            if (!activeShareItem) return;
-            const cleanUrl = window.location.origin + window.location.pathname;
-            const deepLinkUrl = `${cleanUrl}#id=${activeShareItem.id}`;
-            copyToClipboard(deepLinkUrl, '이 프롬프트 바로가기 링크가 복사되었습니다!');
-            closeShareModal();
-        }
-
-        // 액션 2: 프롬프트 원문만 복사
+        // 대체 액션 1: 순수 프롬프트 원문만 즉시 복사
         function executeCopyPromptOnly() {
             if (!activeShareItem) return;
-            copyToClipboard(activeShareItem.prompt, '프롬프트 원문이 복사되었습니다! 카카오톡 등에 붙여넣어 보세요.');
+            copyToClipboard(activeShareItem.prompt, '순수 프롬프트 원문이 복사되었습니다! 원하시는 앱에 붙여넣어 공유하세요.');
             closeShareModal();
         }
 
@@ -933,7 +938,7 @@ https://app.notion.com/p/AI-1-4-372b4989ca09803a96b8f3ac127373de`
                 document.execCommand('copy');
                 showToast(successMessage);
             } catch (err) {
-                showToast('복사에 실패했습니다. 텍스트를 직접 드래그해서 사용해 주세요.');
+                showToast('복사에 실패했습니다. 내용을 직접 선택하여 사용해 주세요.');
             }
             textArea.remove();
         }
